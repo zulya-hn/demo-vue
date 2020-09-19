@@ -2,25 +2,32 @@
   width: 960px;
   margin: 45px auto 0; }
 
-h1[data-v-7191e404], p[data-v-7191e404] {
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -7.5px; }
+  .navigation button {
+    display: block;
+    margin: 0 7.5px; }
+
+h1, p {
   font: bold 35px "Tahoma", sans-serif;
-  text-align: center;
-}
-ul[data-v-7191e404] {
-  list-style: none;
-}
-h3[data-v-7191e404] {
-  font: bold 18px "Tahoma", sans-serif;
-}
-h3 span[data-v-7191e404] {
+  text-align: center; }
+
+ul {
+  list-style: none; }
+
+h3 {
+  font: bold 18px "Tahoma", sans-serif; }
+  h3 span {
     font-size: 16px;
-    color: #888;
-}
-p[data-v-7191e404] {
+    color: #888; }
+
+p {
   font-size: 16px;
-  font-weight: 400;
-}
-button[data-v-7191e404] {
+  font-weight: 400; }
+
+button[data-v-46b8f570] {
   padding: 10px 15px;
   font-size: 16px;
   font-weight: 600;

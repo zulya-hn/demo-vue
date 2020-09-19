@@ -2,3 +2,35 @@
     width: 960px;
     margin: 45px auto 0;
 }
+
+.navigation {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -7.5px;
+    button {
+        display: block;
+        margin: 0 7.5px;
+    }
+}
+
+h1, p {
+    font: bold 35px "Tahoma", sans-serif;
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+}
+
+h3 {
+    font: bold 18px "Tahoma", sans-serif;
+    span {
+        font-size: 16px;
+        color: #888;
+    }
+}
+
+p {
+    font-size: 16px;
+    font-weight: 400;
+}

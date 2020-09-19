@@ -1,5 +1,5 @@
 import '../scss/common.scss';
 
-import app from './vue/app';
+import vm from './vue/app';
 
-console.log(app);
+console.log(vm);

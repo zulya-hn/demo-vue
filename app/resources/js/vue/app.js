@@ -1,12 +1,12 @@
 import Vue from 'vue';
 
-import appRoot from './components/app-root.vue'
+import AppRoot from './components/app-root.vue'
 
-let app = new Vue({
+let vm = new Vue({
     el: '#app',
     components: {
-        'app-root': appRoot
+        'app-root': AppRoot
     }
 });
 
-export default app;
+export default vm;
