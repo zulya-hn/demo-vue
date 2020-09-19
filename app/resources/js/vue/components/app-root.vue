@@ -1,24 +1,27 @@
 <template>
     <div>
-        <h1>
+        <h1 class="title">
             {{ title }}
         </h1>
         <p>
             {{ text }}
         </p>
         <ul>
-            <li v-for="user of usersList">
+            <li v-for="post of postStack">
                 <h3>
-                    {{ user.name }}
+                    {{ post.title }} - <span>Post #{{ post.id }}</span>
                 </h3>
                 <p>
-                    Возраст: {{ user.age }}
-                </p>
-                <p>
-                    {{ user.phoneNumber }}
+                    Возраст: {{ post.body }}
                 </p>
             </li>
+            <li v-if="isNewPostFailed">
+                Post loading was failed... Sorry!
+            </li>
         </ul>
+        <button @click="fetchNewPost">
+            {{ postStack.length ? 'load more..' : 'download' }}
+        </button>
     </div>
 </template>
 
@@ -26,36 +29,72 @@
     export default {
         data() {
             return {
-                title: 'We did it!',
-                text: 'git is works now!',
-                usersList: [
-                    {
-                        name: 'Павел',
-                        age: 25,
-                        phoneNumber: '45645745754'
-                    },
-                    {
-                        name: 'Денис',
-                        age: 67,
-                        phoneNumber: '4574575468767978'
-                    },
-                    {
-                        name: 'Юля',
-                        age: 34,
-                        phoneNumber: '43534636'
-                    },
-                    {
-                        name: 'Катя',
-                        age: 28,
-                        phoneNumber: '345637'
-                    },
-                    {
-                        name: 'Роман',
-                        age: 55,
-                        phoneNumber: '657465спроагно'
-                    },
-                ]
-            }
+                title: 'Fetch data test',
+                text: 'click button for getting new post',
+                postStack: [],
+                nextPost: 1,
+                isNewPostFailed: false
+            };
+        },
+        methods: {
+            fetchNewPost() {
+                console.log('start fetch data..');
+                
+                fetch(`https://jsonplaceholder.typicode.com/posts/${this.nextPost}`)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Not 2xx response');
+                        }
+                        return response.json();
+                    })
+                    .then((json) => {
+                        console.log(json);
+                        
+                        this.addNewPost(json);
+                    })
+                    .catch((error) => {
+                        console.log('Response not received..\n', error);
+    
+                        this.isNewPostFailed = true;
+                    });
+            },
+            addNewPost(post) {
+                this.isNewPostFailed = false;
+                
+                this.postStack.push(post);
+                this.nextPost = post.id + 1;
+            },
+        }
+    };
+</script>
+
+<style lang="scss"
+       scoped>
+    h1, p {
+        font: bold 35px "Tahoma", sans-serif;
+        text-align: center;
+    }
+    
+    ul {
+        list-style: none;
+    }
+    
+    h3 {
+        font: bold 18px "Tahoma", sans-serif;
+        span {
+            font-size: 16px;
+            color: #888;
         }
     }
-</script>
+    
+    p {
+        font-size: 16px;
+        font-weight: 400;
+    }
+    
+    button {
+        padding: 10px 15px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+</style>

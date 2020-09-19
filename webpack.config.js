@@ -1,10 +1,12 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'development',
     entry: __dirname + '/app/resources/js/common.js',
     output: {
-        path: __dirname + '/app/production/js/',
+        filename: 'build.js',
+        path: __dirname + '/app/public/static/',
     },
     module: {
         rules: [
@@ -17,16 +19,21 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.css$/,
+                test: /\.(sa|sc)ss$/,
                 use: [
                     'vue-style-loader',
-                    'css-loader'
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader'
                 ]
             }
         ]
     },
     plugins: [
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+        new MiniCssExtractPlugin({
+            filename: 'style.css',
+        }),
     ],
     resolve: {
         alias: {
