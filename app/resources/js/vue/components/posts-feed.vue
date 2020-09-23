@@ -48,7 +48,7 @@
                         
                         return response.json();
                     })
-                    .then((json) => {
+                    .then((json) => { // почему тут жсон?
                         console.log(json);
                         
                         this.addNewPost(json);
@@ -63,7 +63,7 @@
                 this.isNewPostFailed = false;
                 
                 this.postStack.push(post);
-                this.nextPost = post.id + 1;
+                this.nextPost = post.id + 1; // блочить кнопку
             },
         }
     };
