@@ -15,76 +15,88 @@
                 </div>
             </div>
             
-            <p v-if="errors[questionIndex]" class="alert alert-danger">
-                {{ errorMessage }}
+            <p v-show="errorMessages.no_select_answer.hasError"
+               class="alert alert-danger">
+                {{ errorMessages.no_select_answer.text }}
             </p>
-            <div v-for="(question, index) in quiz.questions">
-                <div v-show="index === questionIndex">
             
-                    <h4 class="mt-5 mb-3">{{ question.text }}</h4>
-            
-                    <div v-for="answer in question.answers" class="form-check">
+            <div v-for="(question, index) in quiz">
+                <div v-if="index === questionIndex">
+                    
+                    <h4 class="mt-5 mb-3">
+                        {{ question.text }}
+                    </h4>
+                    
+                    <div v-for="variant in question.variants"
+                         class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="radio"
-                                   :value="answer.value"
+                            <input class="form-check-input"
+                                   type="radio"
+                                   :value="variant"
                                    :name="index"
-                                   v-model="responses[index]">
-                            {{answer.answer}}
+                                   v-model="responses[questionIndex]">
+                            {{ variant }}
                         </label>
                     </div>
-            
+                    
                     <div class="mt-5">
                         <button
                                 class="btn btn-secondary"
-                                @click="prev"
-                                :disabled="!isButtonWorks">
-                            prev
+                                @click="goPrev"
+                                :disabled="questionIndex === 0">
+                            goPrev
                         </button>
-                        <button class="btn btn-primary" @click="next">
-                            next
+                        <button class="btn btn-primary"
+                                @click="goNext">
+                            goNext
                         </button>
                     </div>
                 </div>
             </div>
-    
-            <div v-show="questionIndex === quiz.questions.length">
+            
+            <div v-if="questionIndex === quiz.length">
                 <h3>Your Results</h3>
                 <p>
-                    You are: {{ score() }} / {{ quiz.questions.length }}
+                    You are: {{ calcCorrectAnswers() }} / {{ quiz.length }}
                 </p>
+                
+                <hr>
+                
                 <p>
-                    
                     Your answers:
                 </p>
-                <div v-for="(question, index) in quiz.questions">
+                
+                <div v-for="(question, index) in quiz">
                     
-                    <h4 class="mt-5 mb-3">{{ question.text }}</h4>
+                    <span class="mt-5 mb-3">
+                        {{ question.text }}
+                    </span>
                     
-                    <div v-for="answer in question.answers" class="form-check">
-                        
-                            {{answer.answer}}
-                        
-                    </div>
+                    <span class="form-check">
+                        {{ responses[index] }}
+                    </span>
+                    
                 </div>
-    
+                
                 <p>
-                     Right answers:
+                    Right answers:
                 </p>
                 
-                <div v-for="(question, index) in quiz.questions">
-        
-                    <h4 class="mt-5 mb-3">{{ question.text }}</h4>
-        
-                    <div v-for="answer in question.answers" class="form-check">
-            
-                        {{answer.answer}}
-        
-                    </div>
+                <div v-for="question in quiz">
+                    
+                    <span class="mt-5 mb-3">
+                        {{ question.text }}
+                    </span>
+                    
+                    <span class="form-check">
+                        {{ question.correctVariant }}
+                    </span>
+                    
                 </div>
                 
                 
-                
-                <button class="btn btn-success" @click="playAgain">
+                <button class="btn btn-success"
+                        @click="resetQuiz">
                     Play Again!
                 </button>
             </div>
@@ -97,128 +109,66 @@
         data() {
             return {
                 title: 'Questionnaire',
-                message: 'Please, answer some questions',
+                message: 'Please answer some questions..',
                 questionIndex: 0,
                 responses: [],
-                errors: [],
-                errorMessage: '',
-                isButtonWorks: '',
-                quiz: {
-                    questions: [
-                        {
-                            text: '2 x 2 = ',
-                            answers: [
-                                {
-                                    answer: '4',
-                                    value: 'correct'
-                                },
-                                {
-                                    answer: '2',
-                                    value: 'wrong'
-                                },
-                                {
-                                    answer: '0',
-                                    value: 'wrong'
-                                },
-                            ]
-                        },
-                        {
-                            text: '5 + 5 = ',
-                            answers: [
-                                {
-                                    answer: '0',
-                                    value: 'wrong'
-                                },
-                                {
-                                    answer: '10',
-                                    value: 'correct'
-                                },
-                                {
-                                    answer: '25',
-                                    value: 'wrong'
-                                },
-                            ]
-                        },
-                        {
-                            text: '3 x 6 = ',
-                            answers: [
-                                {
-                                    answer: '12',
-                                    value: 'wrong'
-                                },
-                                {
-                                    answer: '9',
-                                    value: 'wrong'
-                                },
-                                {
-                                    answer: '18',
-                                    value: 'correct'
-                                },
-                            ]
-                        }
-                    ]
-                }
-            }
+                errorMessages: {
+                    no_select_answer: {
+                        text: 'Please select your answer',
+                        hasError: false
+                    }
+                },
+                quiz: [
+                    {
+                        text: '2 x 2 = ',
+                        variants: [4, 2, 0],
+                        correctVariant: 4
+                    },
+                    {
+                        text: '5 + 5 = ',
+                        variants: [0, 10, 25],
+                        correctVariant: 10
+                    },
+                    {
+                        text: '3 x 6 = ',
+                        variants: [12, 9, 18],
+                        correctVariant: 18
+                    }
+                ]
+            };
         },
         methods: {
-            prev() {
-                if(this.questionIndex > 0) {
-                    this.isButtonWorks = !this.isButtonWorks;
-                }
-                this.questionIndex--;
-            },
-    
-            next() {
-                if (this.responses[this.questionIndex] === undefined) {
-                    this.errors[this.questionIndex] = 1;
-                    this.errorMessage = 'Please select your answer';
-                    this.questionIndex++;
+            goPrev() {
+                if (this.questionIndex > 0) {
                     this.questionIndex--;
                 }
-                else {
-                    this.errors[this.questionIndex] = 0;
+            },
+            
+            goNext() {
+                if (this.responses[this.questionIndex] !== undefined) {
+                    this.errorMessages.no_select_answer.hasError = false;
                     this.questionIndex++;
+                    return;
                 }
+                this.errorMessages.no_select_answer.hasError = true;
             },
-    
-            score() {
-                let count = 0;
-                
-                for (let i = 0; i < this.responses.length; ++i) {
-                    if (this.responses[i] === 'correct') {
-                       count++;
-                    }
-                }
-    
-                return count;
+            
+            calcCorrectAnswers() {
+                return 'TODO'
             },
-    
-            playAgain() {
+            
+            resetQuiz() {
                 this.responses = [];
                 this.questionIndex = 0;
             },
-
+            
         },
         computed: {
-    
-            answeredLine() {
-                
-                let answeredLine = 0;
-        
-                for (let i = 0; i < this.responses.length; i++) {
-                    if (this.responses[i]) {
-                        answeredLine++;
-                    }
-                }
-        
-                return answeredLine;
-            },
-    
-            progressWidth(){
+            progressWidth() {
                 return {
-                    width: (this.answeredLine / this.quiz.questions.length * 100) + '%'
-                }
+                    width: (this.questionIndex / this.quiz.length * 100) + '%'
+                };
             }
-        }
-    }
+        },
+    };
 </script>
