@@ -34,3 +34,16 @@ p {
     font-size: 16px;
     font-weight: 400;
 }
+
+.answer {
+    &.wrong {
+        color: red;
+    }
+    &.correct {
+        color: #00BF00;
+    }
+}
+
+.selectedItemClass {
+    background-color:blue;
+}

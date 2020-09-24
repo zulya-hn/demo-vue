@@ -27,6 +27,15 @@ p {
   font-size: 16px;
   font-weight: 400; }
 
+.answer.wrong {
+  color: red; }
+
+.answer.correct {
+  color: #00BF00; }
+
+.selectedItemClass {
+  background-color: blue; }
+
 button[data-v-46b8f570] {
   padding: 10px 15px;
   font-size: 16px;

@@ -35,6 +35,7 @@
                                    :value="variant"
                                    :name="index"
                                    v-model="responses[questionIndex]">
+                            
                             {{ variant }}
                         </label>
                     </div>
@@ -57,7 +58,7 @@
             <div v-if="questionIndex === quiz.length">
                 <h3>Your Results</h3>
                 <p>
-                    You are: {{ calcCorrectAnswers() }} / {{ quiz.length }}
+                    You are: {{ calcCorrectAnswers }} / {{ quiz.length }}
                 </p>
                 
                 <hr>
@@ -66,7 +67,9 @@
                     Your answers:
                 </p>
                 
-                <div v-for="(question, index) in quiz">
+                <div v-for="(question, index) in quiz"
+                     class="answer"
+                     :class="checkCorrectAnswer(question.correctVariant, responses[index])">
                     
                     <span class="mt-5 mb-3">
                         {{ question.text }}
@@ -75,14 +78,15 @@
                     <span class="form-check">
                         {{ responses[index] }}
                     </span>
-                    
+                
                 </div>
                 
                 <p>
                     Right answers:
                 </p>
                 
-                <div v-for="question in quiz">
+                <div v-for="question in quiz"
+                     class="answer correct">
                     
                     <span class="mt-5 mb-3">
                         {{ question.text }}
@@ -91,14 +95,16 @@
                     <span class="form-check">
                         {{ question.correctVariant }}
                     </span>
-                    
+                
                 </div>
                 
+                <br>
                 
                 <button class="btn btn-success"
                         @click="resetQuiz">
                     Play Again!
                 </button>
+            
             </div>
         </div>
     </div>
@@ -112,6 +118,8 @@
                 message: 'Please answer some questions..',
                 questionIndex: 0,
                 responses: [],
+                correctAnswers: 0,
+                selectedItem: "",
                 errorMessages: {
                     no_select_answer: {
                         text: 'Please select your answer',
@@ -148,13 +156,15 @@
                 if (this.responses[this.questionIndex] !== undefined) {
                     this.errorMessages.no_select_answer.hasError = false;
                     this.questionIndex++;
+                    // console.log(this.responses);
+                    
                     return;
                 }
                 this.errorMessages.no_select_answer.hasError = true;
             },
-            
-            calcCorrectAnswers() {
-                return 'TODO'
+    
+            checkCorrectAnswer(correctAnswer, userAnswer) {
+                return correctAnswer === userAnswer ? 'correct' : 'wrong';
             },
             
             resetQuiz() {
@@ -168,7 +178,17 @@
                 return {
                     width: (this.questionIndex / this.quiz.length * 100) + '%'
                 };
-            }
+            },
+            
+            calcCorrectAnswers() {
+                for (let i = 0; i < this.quiz.length; i++) {
+                    if (this.quiz[i].correctVariant === this.responses[i]) {
+                        this.correctAnswers++;
+                    }
+                }
+                
+                return this.correctAnswers;
+            },
         },
     };
 </script>
